@@ -1,0 +1,22 @@
+When the project is using Spring 4.3  and Hibernate 5.2, how to write the JUnit test without bounded with concrete DB closely. 
+In other words, How to mock DB in JUnit test for service method.  If not possible give the reason else list cases for the different scenario.
+
+It is definitely possible. 
+
+You can use spring data jpa and h2database dependencies (with spring and hibernate), 
+then make a class marked as an entity with getters and setters, and make a repository interface based on Spring Data JPA.
+
+To allow the use different database configurations for standard and testing mode, we read the database properties from a files in different locations.
+
+For normal mode, the properties file will reside in src/main/resources, and for the testing method, we will use a properties file in the src/test/resources folder.
+
+When running a test, the application will first look for files in the src/test/resources folder. 
+If the file is not found in this location, then it will use the one defined in src/main/resources folder. 
+If the file is present is the test path, then it will override the one from the main path.
+
+Make a properties folder that resides in the src/main/resources folder and defines properties for a MYSQL data source.
+Then make another in the test folder with the same kets and H2 database specific values.
+
+Then you need a configuraiton class that searches for the properties file and creates a DataSource from it
+
+Then you can create a Junit Test that can use the repository to save and retrieve an entry as if it were in a database.
